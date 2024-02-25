@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using RamSoft_Task_Management.Infrastructure;
+using RamSoft_Task_Management.Services;
+
 namespace RamSoft_Task_Management
 {
     public class Program
@@ -12,6 +16,10 @@ namespace RamSoft_Task_Management
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddDbContext<JiraAppDbContext>(options => options.UseInMemoryDatabase("JiraAppDb"));
+            builder.Services.AddScoped<ITaskRepository,  TaskRepository>();
+            builder.Services.AddScoped<ITaskService, TaskServices>();
+
 
             var app = builder.Build();
 
