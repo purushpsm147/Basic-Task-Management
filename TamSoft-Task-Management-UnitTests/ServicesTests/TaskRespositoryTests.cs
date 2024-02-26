@@ -1,4 +1,8 @@
-﻿using RamSoft_Task_Management.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moq;
+using RamSoft_Task_Management.Infrastructure;
+using RamSoft_Task_Management.Models;
 using RamSoft_Task_Management.Services;
 
 namespace TamSoft_Task_Management_UnitTests.ServicesTests;
@@ -46,22 +50,50 @@ public class TaskRepositoryTests : IClassFixture<DatabaseFixture>
     [Fact]
     public async Task GetTasks_Should_Return_All_Tasks()
     {
-        var tasks = await _repository.GetTasks();
+        var options = new DbContextOptionsBuilder<JiraAppDbContext>()
+        .UseInMemoryDatabase(Guid.NewGuid().ToString()) // Generate unique db name for each test
+        .Options;
 
-        Assert.Equal(3, tasks.Count());
+        var context = new JiraAppDbContext(options);
+        context.Database.EnsureCreated();
+
+        context.JiraTask.AddRange(new List<JiraTask>()
+    {
+        new JiraTask { Name = "Task 1", Description = "This is task 1" },
+    });
+        context.SaveChanges();
+
+        var repository = new TaskRepository(context, new Mock<ILogger<TaskRepository>>().Object);
+        var tasks = await repository.GetTasks();
+
+        Assert.Equal(1, tasks.Count());
     }
 
     [Fact]
     public async Task UpdateTask_Should_Update_Task_Successfully()
     {
-        var task = await _repository.GetTask(1);
+        var options = new DbContextOptionsBuilder<JiraAppDbContext>()
+        .UseInMemoryDatabase(Guid.NewGuid().ToString()) // Generate unique db name for each test
+        .Options;
+
+        var context = new JiraAppDbContext(options);
+        context.Database.EnsureCreated();
+
+        context.JiraTask.AddRange(new List<JiraTask>()
+        {
+            new JiraTask { Name = "Task 1", Description = "This is task 1" },
+        });
+        context.SaveChanges();
+
+        var repository = new TaskRepository(context, new Mock<ILogger<TaskRepository>>().Object);
+        var task = await repository.GetTask(1);
         task.Name = "Updated Task";
 
-        var result = await _repository.UpdateTask(task);
+        var result = await repository.UpdateTask(task);
 
         Assert.True(result.IsSuccess);
 
-        var updatedTask = await _repository.GetTask(1);
+        var updatedTask = await repository.GetTask(1);
         Assert.Equal("Updated Task", updatedTask.Name);
     }
 
