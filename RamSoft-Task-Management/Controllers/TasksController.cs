@@ -65,7 +65,7 @@ public class TasksController : ControllerBase
     }
 
     [HttpPost(Name = "CreateTask")]
-    [ProducesResponseType(typeof(JiraTask), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(JiraTask), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(void), StatusCodes.Status500InternalServerError)]
