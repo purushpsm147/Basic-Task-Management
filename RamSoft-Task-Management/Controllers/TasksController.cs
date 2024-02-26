@@ -27,15 +27,21 @@ public class TasksController : ControllerBase
         return Ok(tasks);
     }
 
+    /// <summary>
+    /// Dynamic Sorting of Tasks
+    /// </summary>
+    /// <param name="sortOrder"> asc or desc</param>
+    /// <param name="prop"> Object property to sort upon </param>
+    /// <returns></returns>
     [HttpGet("sort", Name = "SortTasks")]
     [ProducesResponseType(typeof(IEnumerable<JiraTask>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(void), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<IEnumerable<JiraTask>>> SortTasks()
+    public async Task<ActionResult<IEnumerable<JiraTask>>> SortTasks([FromQuery] bool sortOrder, [FromQuery] string prop)
     {
         var tasks = await _taskService.GetTasks();
-        return Ok(_taskService.SortTask(tasks.ToList()));
+        return Ok(_taskService.SortTask(tasks.ToList(), sortOrder, prop));
     }
 
     [HttpGet("{id}", Name = "GetTaskById")]

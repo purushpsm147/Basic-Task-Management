@@ -9,5 +9,6 @@ public class JiraTask
     public string? Description { get; set; }
     public DateTime Deadline { get; set; }
     public bool IsFavorite { get; set; }
-    public JiraTaskStatus Status { get; set; } 
+    public JiraTaskStatus Status { get; set; }
+    public string ImageURL { get; set; }
 }

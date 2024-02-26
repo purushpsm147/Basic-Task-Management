@@ -10,5 +10,5 @@ public interface ITaskService
     Task<JiraProcessResults> CreateTask(JiraTask task);
     Task<JiraProcessResults> UpdateTask(JiraTask task);
     Task<JiraProcessResults> DeleteTask(JiraTask task);
-    IList<JiraTask> SortTask(IList<JiraTask> tasks);
+    List<JiraTask> SortTask(List<JiraTask> tasks, bool order, string prop);
 }
