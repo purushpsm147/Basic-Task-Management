@@ -1,6 +1,4 @@
-﻿
-using RamSoft_Task_Management.Enums;
-using RamSoft_Task_Management.Models;
+﻿using RamSoft_Task_Management.Models;
 
 namespace RamSoft_Task_Management.Services;
 
@@ -11,14 +9,14 @@ public class TaskServices : ITaskService
     {
         _taskRepository = taskRepository;
     }
-    public async Task CreateTask(JiraTask task)
+    public async Task<JiraProcessResults> CreateTask(JiraTask task)
     {
-        await _taskRepository.CreateTask(task);
+       return await _taskRepository.CreateTask(task);
     }
 
-    public async Task DeleteTask(JiraTask task)
+    public async Task<JiraProcessResults> DeleteTask(JiraTask task)
     {
-        await _taskRepository.DeleteTask(task);
+        return await _taskRepository.DeleteTask(task);
     }
 
     public async Task<JiraTask?> GetTask(int id)
@@ -37,8 +35,8 @@ public class TaskServices : ITaskService
         return tasks.OrderBy(t => t.IsFavorite).ThenBy(t => t.Name).ToList();
     }
 
-    public async Task UpdateTask(JiraTask task)
+    public async Task<JiraProcessResults> UpdateTask(JiraTask task)
     {
-        await _taskRepository.UpdateTask(task);
+        return await _taskRepository.UpdateTask(task);
     }
 }

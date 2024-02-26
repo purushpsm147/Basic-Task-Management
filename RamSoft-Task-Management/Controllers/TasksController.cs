@@ -71,7 +71,11 @@ public class TasksController : ControllerBase
     [ProducesResponseType(typeof(void), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<JiraTask>> CreateTask(JiraTask task)
     {
-        await _taskService.CreateTask(task);
+        var results = await _taskService.CreateTask(task);
+        if(results.IsFailure)
+        {
+            return StatusCode(500);
+        }
         return CreatedAtRoute("GetTask", new { id = task.Id }, task);
     }
 
@@ -86,7 +90,11 @@ public class TasksController : ControllerBase
         {
             return BadRequest();
         }
-        await _taskService.UpdateTask(task);
+        var results = await _taskService.UpdateTask(task);
+        if(results.IsFailure)
+        {
+            return StatusCode(500);
+        }
         return NoContent();
     }
 
@@ -102,7 +110,11 @@ public class TasksController : ControllerBase
         {
             return NotFound();
         }
-        await _taskService.DeleteTask(task);
+        var results = await _taskService.DeleteTask(task);
+        if(results.IsFailure)
+        {
+            return StatusCode(500);
+        }
         return NoContent();
     }       
 }

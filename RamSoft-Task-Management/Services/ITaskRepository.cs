@@ -7,7 +7,7 @@ public interface ITaskRepository
 {
     Task<IEnumerable<JiraTask>> GetTasks();
     Task<JiraTask?> GetTask(int id);
-    Task CreateTask(JiraTask task);
-    Task UpdateTask(JiraTask task);
-    Task DeleteTask(JiraTask task);
+    Task<JiraProcessResults> CreateTask(JiraTask task);
+    Task<JiraProcessResults> UpdateTask(JiraTask task);
+    Task<JiraProcessResults> DeleteTask(JiraTask task);
 }
