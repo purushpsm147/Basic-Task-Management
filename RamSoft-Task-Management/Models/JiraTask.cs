@@ -10,5 +10,5 @@ public class JiraTask
     public DateTime Deadline { get; set; }
     public bool IsFavorite { get; set; }
     public JiraTaskStatus Status { get; set; }
-    public string ImageURL { get; set; }
+    public string? ImageURL { get; set; }
 }
