@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RamSoft_Task_Management.Enums;
 using RamSoft_Task_Management.Models;
 using RamSoft_Task_Management.Services;
 
@@ -37,7 +38,7 @@ public class TasksController : ControllerBase
         return Ok(_taskService.SortTask(tasks.ToList()));
     }
 
-    [HttpGet("{id}", Name = "GetTask")]
+    [HttpGet("{id}", Name = "GetTaskById")]
     [ProducesResponseType(typeof(JiraTask), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
@@ -50,6 +51,17 @@ public class TasksController : ControllerBase
             return NotFound();
         }
         return Ok(task);
+    }
+
+    [HttpGet("search", Name = "GetTaskByStatus")]
+    [ProducesResponseType(typeof(IEnumerable<JiraTask>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<IEnumerable<JiraTask>>> GetTaskByStatus([FromQuery] JiraTaskStatus status)
+    {
+        var tasks = await _taskService.GetTasks();
+        return Ok(tasks.Where(t => t.Status == status));
     }
 
     [HttpPost(Name = "CreateTask")]
