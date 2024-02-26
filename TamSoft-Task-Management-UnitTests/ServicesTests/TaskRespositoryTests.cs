@@ -58,9 +58,9 @@ public class TaskRepositoryTests : IClassFixture<DatabaseFixture>
         context.Database.EnsureCreated();
 
         context.JiraTask.AddRange(new List<JiraTask>()
-    {
-        new JiraTask { Name = "Task 1", Description = "This is task 1" },
-    });
+        {
+            new JiraTask { Name = "Task 1", Description = "This is task 1" },
+        });
         context.SaveChanges();
 
         var repository = new TaskRepository(context, new Mock<ILogger<TaskRepository>>().Object);
