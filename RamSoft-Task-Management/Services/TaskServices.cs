@@ -31,6 +31,11 @@ public class TaskServices : ITaskService
 
     }
 
+    public IList<JiraTask> SortTask(IList<JiraTask> tasks)
+    {
+        return tasks.OrderBy(t => t.IsFavorite).ThenBy(t => t.Name).ToList();
+    }
+
     public async Task UpdateTask(JiraTask task)
     {
         await _taskRepository.UpdateTask(task);

@@ -9,4 +9,5 @@ public interface ITaskService
     Task CreateTask(JiraTask task);
     Task UpdateTask(JiraTask task);
     Task DeleteTask(JiraTask task);
+    IList<JiraTask> SortTask(IList<JiraTask> tasks);
 }

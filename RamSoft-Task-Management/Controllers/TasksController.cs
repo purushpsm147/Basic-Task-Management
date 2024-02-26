@@ -16,13 +16,32 @@ public class TasksController : ControllerBase
     }
 
     [HttpGet(Name = "GetTasks")]
+    [ProducesResponseType(typeof(IEnumerable<JiraTask>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<IEnumerable<JiraTask>>> GetTasks()
     {
         var tasks = await _taskService.GetTasks();
         return Ok(tasks);
     }
 
+    [HttpGet("sort", Name = "SortTasks")]
+    [ProducesResponseType(typeof(IEnumerable<JiraTask>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<IEnumerable<JiraTask>>> SortTasks()
+    {
+        var tasks = await _taskService.GetTasks();
+        return Ok(_taskService.SortTask(tasks.ToList()));
+    }
+
     [HttpGet("{id}", Name = "GetTask")]
+    [ProducesResponseType(typeof(JiraTask), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<JiraTask>> GetTask(int id)
     {
         var task = await _taskService.GetTask(id);
@@ -34,6 +53,10 @@ public class TasksController : ControllerBase
     }
 
     [HttpPost(Name = "CreateTask")]
+    [ProducesResponseType(typeof(JiraTask), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<JiraTask>> CreateTask(JiraTask task)
     {
         await _taskService.CreateTask(task);
@@ -41,6 +64,10 @@ public class TasksController : ControllerBase
     }
 
     [HttpPut("{id}", Name = "UpdateTask")]
+    [ProducesResponseType(typeof(JiraTask), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<JiraTask>> UpdateTask(int id, JiraTask task)
     {
         if (id != task.Id)
@@ -52,6 +79,10 @@ public class TasksController : ControllerBase
     }
 
     [HttpDelete("{id}", Name = "DeleteTask")]
+    [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<JiraTask>> DeleteTask(int id)
     {
         var task = await _taskService.GetTask(id);
