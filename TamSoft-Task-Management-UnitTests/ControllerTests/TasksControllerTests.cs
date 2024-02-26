@@ -89,11 +89,11 @@ public class TasksControllerTests
     }
 
     [Fact]
-    public async Task CreateTask_ReturnsOkResult()
+    public async Task CreateTask_ReturnsCreatedResult()
     {
         // Arrange
         var task = new JiraTask { Id = 1, Name = "Task 1", Description = "Description 1", Status = JiraTaskStatus.InProgress };
-        _taskServiceMock.Setup(x => x.CreateTask(It.IsAny<JiraTask>()));
+        _taskServiceMock.Setup(x => x.CreateTask(It.IsAny<JiraTask>())).ReturnsAsync(JiraProcessResults.Success());
         var controller = new TasksController(_taskServiceMock.Object);
 
         // Act
@@ -104,4 +104,99 @@ public class TasksControllerTests
         var model = Assert.IsType<JiraTask>(createdResult.Value);
         Assert.Equal(1, model.Id);
     }
+
+    [Fact]
+    public async Task CreateTask_ReturnsStatusCode500Result()
+    {
+        // Arrange
+        var task = new JiraTask { Id = 1, Name = "Task 1", Description = "Description 1", Status = JiraTaskStatus.InProgress };
+        _taskServiceMock.Setup(x => x.CreateTask(It.IsAny<JiraTask>())).ReturnsAsync(JiraProcessResults.Failure(JiraProcessError.InternalServerError));
+        var controller = new TasksController(_taskServiceMock.Object);
+
+        // Act
+        var result = await controller.CreateTask(task);
+
+        // Assert
+        Assert.IsType<StatusCodeResult>(result.Result);
+        Assert.Equal(500, (result.Result as StatusCodeResult)?.StatusCode);
+    }
+
+    [Fact]
+    public async Task UpdateTask_ReturnsNoContentResult()
+    {
+        // Arrange
+        var task = new JiraTask { Id = 1, Name = "Task 1", Description = "Description 1", Status = JiraTaskStatus.InProgress };
+        _taskServiceMock.Setup(x => x.UpdateTask(It.IsAny<JiraTask>())).ReturnsAsync(JiraProcessResults.Success());
+        var controller = new TasksController(_taskServiceMock.Object);
+
+        // Act
+        var result = await controller.UpdateTask(task);
+
+        // Assert
+        var noContentResult = Assert.IsType<NoContentResult>(result.Result);
+    }
+
+    [Fact]
+    public async Task UpdateTask_ReturnsStatusCode500Result()
+    {
+        // Arrange
+        var task = new JiraTask { Id = 1, Name = "Task 1", Description = "Description 1", Status = JiraTaskStatus.InProgress };
+        _taskServiceMock.Setup(x => x.UpdateTask(It.IsAny<JiraTask>())).ReturnsAsync(JiraProcessResults.Failure(JiraProcessError.InternalServerError));
+        var controller = new TasksController(_taskServiceMock.Object);
+
+        // Act
+        var result = await controller.UpdateTask(task);
+
+        // Assert
+        Assert.IsType<StatusCodeResult>(result.Result);
+        Assert.Equal(500, (result.Result as StatusCodeResult)?.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteTask_ReturnsNoContentResult()
+    {
+        // Arrange
+        var task = new JiraTask { Id = 1, Name = "Task 1", Description = "Description 1", Status = JiraTaskStatus.InProgress };
+        _taskServiceMock.Setup(x => x.GetTask(It.IsAny<int>())).ReturnsAsync(task);
+        _taskServiceMock.Setup(x => x.DeleteTask(It.IsAny<JiraTask>())).ReturnsAsync(JiraProcessResults.Success());
+        var controller = new TasksController(_taskServiceMock.Object);
+
+        // Act
+        var result = await controller.DeleteTask(1);
+
+        // Assert
+        var noContentResult = Assert.IsType<NoContentResult>(result.Result);
+    }
+
+    [Fact]
+    public async Task DeleteTask_ReturnsNotFoundResult()
+    {
+        // Arrange
+        _taskServiceMock.Setup(x => x.GetTask(It.IsAny<int>())).ReturnsAsync((JiraTask)null);
+        var controller = new TasksController(_taskServiceMock.Object);
+
+        // Act
+        var result = await controller.DeleteTask(1);
+
+        // Assert
+        Assert.IsType<NotFoundResult>(result.Result);
+    }
+
+    [Fact]
+    public async Task DeleteTask_ReturnsStatusCode500Result()
+    {
+        // Arrange
+        var task = new JiraTask { Id = 1, Name = "Task 1", Description = "Description 1", Status = JiraTaskStatus.InProgress };
+        _taskServiceMock.Setup(x => x.GetTask(It.IsAny<int>())).ReturnsAsync(task);
+        _taskServiceMock.Setup(x => x.DeleteTask(It.IsAny<JiraTask>())).ReturnsAsync(JiraProcessResults.Failure(JiraProcessError.InternalServerError));
+        var controller = new TasksController(_taskServiceMock.Object);
+
+        // Act
+        var result = await controller.DeleteTask(1);
+
+        // Assert
+        Assert.IsType<StatusCodeResult>(result.Result);
+        Assert.Equal(500, (result.Result as StatusCodeResult)?.StatusCode);
+    }   
+
 }

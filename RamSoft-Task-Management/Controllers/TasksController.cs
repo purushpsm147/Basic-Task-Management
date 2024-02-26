@@ -76,7 +76,7 @@ public class TasksController : ControllerBase
         {
             return StatusCode(500);
         }
-        return CreatedAtRoute("GetTask", new { id = task.Id }, task);
+        return CreatedAtRoute("GetTaskById", new { id = task.Id }, task);
     }
 
     [HttpPut("{id}", Name = "UpdateTask")]
@@ -84,12 +84,8 @@ public class TasksController : ControllerBase
     [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(void), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<JiraTask>> UpdateTask(int id, JiraTask task)
+    public async Task<ActionResult<JiraTask>> UpdateTask(JiraTask task)
     {
-        if (id != task.Id)
-        {
-            return BadRequest();
-        }
         var results = await _taskService.UpdateTask(task);
         if(results.IsFailure)
         {
