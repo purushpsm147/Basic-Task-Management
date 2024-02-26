@@ -34,14 +34,14 @@ public class TasksController : ControllerBase
     }
 
     [HttpPost(Name = "CreateTask")]
-    public async Task<ActionResult<Task>> CreateTask(JiraTask task)
+    public async Task<ActionResult<JiraTask>> CreateTask(JiraTask task)
     {
         await _taskService.CreateTask(task);
         return CreatedAtRoute("GetTask", new { id = task.Id }, task);
     }
 
     [HttpPut("{id}", Name = "UpdateTask")]
-    public async Task<ActionResult<Task>> UpdateTask(int id, JiraTask task)
+    public async Task<ActionResult<JiraTask>> UpdateTask(int id, JiraTask task)
     {
         if (id != task.Id)
         {
@@ -52,7 +52,7 @@ public class TasksController : ControllerBase
     }
 
     [HttpDelete("{id}", Name = "DeleteTask")]
-    public async Task<ActionResult<Task>> DeleteTask(int id)
+    public async Task<ActionResult<JiraTask>> DeleteTask(int id)
     {
         var task = await _taskService.GetTask(id);
         if (task == null)

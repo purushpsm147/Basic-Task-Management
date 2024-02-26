@@ -1,6 +1,8 @@
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using RamSoft_Task_Management.Infrastructure;
 using RamSoft_Task_Management.Services;
+using RamSoft_Task_Management.Validations;
 
 namespace RamSoft_Task_Management
 {
@@ -19,6 +21,7 @@ namespace RamSoft_Task_Management
             builder.Services.AddDbContext<JiraAppDbContext>(options => options.UseInMemoryDatabase("JiraAppDb"));
             builder.Services.AddScoped<ITaskRepository,  TaskRepository>();
             builder.Services.AddScoped<ITaskService, TaskServices>();
+            builder.Services.AddValidatorsFromAssemblyContaining<JiraTaskValidator>();
 
 
             var app = builder.Build();
