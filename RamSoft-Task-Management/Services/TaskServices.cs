@@ -1,4 +1,5 @@
-﻿using RamSoft_Task_Management.Models;
+﻿using RamSoft_Task_Management.Enums;
+using RamSoft_Task_Management.Models;
 using System.Reflection;
 
 namespace RamSoft_Task_Management.Services;
@@ -32,11 +33,10 @@ public class TaskServices : ITaskService
     }
 
     //TODO: Flexible, sort by various properties, and order could be asc or desc
-    public List<JiraTask> SortTask(List<JiraTask> tasks, bool order, string prop)
+    public List<JiraTask> SortTask(List<JiraTask> tasks, SortDirection order, string prop)
     {
-        var sortOrder = order ? "asc" : "desc";
-        return (List<JiraTask>)DynamicSort1<JiraTask>(tasks, prop, sortOrder);
-        //return tasks.OrderBy(t => t.IsFavorite).ThenBy(t => t.Name).ToList();
+        var sortOrder = order.ToFriendlyString().ToLowerInvariant();
+        return DynamicSort(tasks, prop, sortOrder);
     }
 
     public async Task<JiraProcessResults> UpdateTask(JiraTask task)
@@ -44,37 +44,54 @@ public class TaskServices : ITaskService
         return await _taskRepository.UpdateTask(task);
     }
 
-    private static List<T> DynamicSort1<T>(List<T> genericList, string sortExpression, string sortDirection)
-    {
-        int sortReverser = sortDirection.ToLower().StartsWith("asc") ? 1 : -1;
-        Comparison<T> comparisonDelegate = new Comparison<T>((x, y) =>
-        {
-            // Just to get the compare method info to compare the values.
-            MethodInfo compareToMethod = GetCompareToMethod<T>(x, sortExpression);
-            // Getting current object value.
-            object xSortExpressionValue = x.GetType().GetProperty(sortExpression).GetValue(x, null);
-            // Getting the previous value.
-            object ySortExpressionValue = y.GetType().GetProperty(sortExpression).GetValue(y, null);
-            // Comparing the current and next object value of collection.
-            object result = compareToMethod.Invoke(xSortExpressionValue, new object[] { ySortExpressionValue });
-            // Result tells whether the compared object is equal, greater, or lesser.
-            return sortReverser * Convert.ToInt16(result);
-        });
-        // Using the comparison delegate to sort the object by its property.
-        genericList.Sort(comparisonDelegate);
-
-        return genericList;
-    }
-
     /// <summary>
-    /// Used to get method information using reflection
+    /// Dynamically sorts a list of objects based on a specified property and direction.
+    /// For JiraTask objects, IsFavorite tasks will always be ordered first.
+    /// Supports string, numeric, DateTime (e.g. Deadline) and other IComparable properties.
     /// </summary>
-    private static MethodInfo GetCompareToMethod<T>(T genericInstance, string sortExpression)
+    /// <typeparam name="T"></typeparam>
+    /// <param name="list"></param>
+    /// <param name="sortProperty"></param>
+    /// <param name="sortDirection"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    private static List<T> DynamicSort<T>(List<T> list, string sortProperty, string sortDirection)
     {
-        Type genericType = genericInstance.GetType();
-        object sortExpressionValue = genericType.GetProperty(sortExpression).GetValue(genericInstance, null);
-        Type sortExpressionType = sortExpressionValue.GetType();
-        MethodInfo compareToMethodOfSortExpressionType = sortExpressionType.GetMethod("CompareTo", new Type[] { sortExpressionType });
-        return compareToMethodOfSortExpressionType;
+        if (list.Count == 0)
+            return list;
+
+        // Use case-insensitive lookup so both "deadline" and "Deadline" work.
+        var type = typeof(T);
+        var propertyInfo = type.GetProperty(sortProperty,
+            BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase)
+            ?? throw new ArgumentException($"Property '{sortProperty}' not found on type '{type.Name}'.");
+
+        int sortReverser = sortDirection.StartsWith("asc", StringComparison.OrdinalIgnoreCase) ? 1 : -1;
+
+        list.Sort((x, y) =>
+        {
+            // Check if T is JiraTask and apply IsFavorite bubble logic.
+            if (x is JiraTask tx && y is JiraTask ty && tx.IsFavorite != ty.IsFavorite)
+            {
+                // If one is favorite and the other is not, prioritize the favorite.
+                return tx.IsFavorite ? -1 : 1;
+            }
+
+            // Retrieve the values for the dynamic property.
+            var xValue = propertyInfo.GetValue(x) as IComparable;
+            var yValue = propertyInfo.GetValue(y) as IComparable;
+
+            // Handle possible nulls.
+            if (xValue == null && yValue == null)
+                return 0;
+            if (xValue == null)
+                return -1 * sortReverser;
+            if (yValue == null)
+                return 1 * sortReverser;
+
+            return sortReverser * xValue.CompareTo(yValue);
+        });
+
+        return list;
     }
 }
