@@ -1,0 +1,43 @@
+<div class="filter-dialog">
+  <h2 mat-dialog-title class="dialog-title">
+    <mat-icon class="title-icon">tune</mat-icon>
+    <span>Filters</span>
+  </h2>
+  
+  <mat-dialog-content class="dialog-content">
+    <form [formGroup]="filterForm">
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Search</mat-label>
+        <input matInput formControlName="searchTerm" placeholder="By name or description">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="statusFilter">
+          <mat-option [value]="null">All</mat-option>
+          <mat-option *ngFor="let option of statusOptions" [value]="option.value">
+            {{ option.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="toggle-section">
+        <mat-slide-toggle formControlName="showFavoritesOnly" color="accent">
+          Favorites Only
+        </mat-slide-toggle>
+      </div>
+    </form>
+  </mat-dialog-content>
+  
+  <mat-dialog-actions align="end" class="dialog-actions">
+    <button mat-button color="warn" (click)="clearFilters()" *ngIf="hasActiveFilters()">
+      <mat-icon>clear_all</mat-icon>
+      Clear All
+    </button>
+    <button mat-button (click)="cancel()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="apply()">
+      Apply Filters
+    </button>
+  </mat-dialog-actions>
+</div>
