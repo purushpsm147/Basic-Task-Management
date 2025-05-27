@@ -20,12 +20,40 @@
             {{ option.label }}
           </mat-option>
         </mat-select>
-      </mat-form-field>
-
-      <div class="toggle-section">
+      </mat-form-field>      <div class="toggle-section">
         <mat-slide-toggle formControlName="showFavoritesOnly" color="accent">
           Favorites Only
         </mat-slide-toggle>
+      </div>      <div class="sort-section">
+        <h3 class="sort-title">
+          <mat-icon class="sort-icon">sort</mat-icon>
+          Sort Options
+        </h3>
+        
+        <div class="active-sort-indicator" *ngIf="getSortPropertyLabel() && getSortDirectionLabel()">
+          <mat-chip-list>          <mat-chip color="primary" selected>
+              <mat-icon>{{getSortDirectionIcon()}}</mat-icon>
+              Sorting by: {{getSortPropertyLabel()}} ({{getSortDirectionLabel()}})
+            </mat-chip>
+          </mat-chip-list>
+        </div>
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Sort By</mat-label>
+          <mat-select formControlName="sortProperty">
+            <mat-option *ngFor="let option of sortProperties" [value]="option.value">
+              {{ option.label }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matSuffix>unfold_more</mat-icon>
+        </mat-form-field>
+          <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Direction</mat-label>
+          <mat-select formControlName="sortDirection">
+            <mat-option *ngFor="let option of sortDirections" [value]="option.value">
+              {{ option.label }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matSuffix>{{getSortDirectionIcon()}}</mat-icon>        </mat-form-field>
       </div>
     </form>
   </mat-dialog-content>

@@ -223,12 +223,15 @@ export class TaskListComponent implements OnInit {
     if (this.dialog.openDialogs.some(d => d.componentInstance instanceof FilterDialogComponent)) {
       return;
     }
-    
-    const data: FilterDialogData = {
+      const data: FilterDialogData = {
       searchTerm: this.searchTerm,
       statusFilter: this.statusFilter,
       showFavoritesOnly: this.showFavoritesOnly,
-      statusOptions: this.statusOptions
+      statusOptions: this.statusOptions,
+      sortProperty: this.sortProperty,
+      sortDirection: this.sortDirection,
+      sortProperties: this.sortProperties,
+      sortDirections: this.sortDirections
     };
     
     const dialogRef = this.dialog.open(FilterDialogComponent, {
@@ -238,13 +241,22 @@ export class TaskListComponent implements OnInit {
       position: { top: '80px' },
       maxWidth: '95vw'
     });
-    
-    dialogRef.afterClosed().subscribe((result: FilterDialogData | null) => {
+      dialogRef.afterClosed().subscribe((result: FilterDialogData | null) => {
       if (result) {
         this.searchTerm = result.searchTerm;
         this.statusFilter = result.statusFilter;
         this.showFavoritesOnly = result.showFavoritesOnly;
-        if (this.statusFilter !== null) {
+        
+        // Handle sort options
+        const sortChanged = 
+          this.sortProperty !== result.sortProperty || 
+          this.sortDirection !== result.sortDirection;
+          
+        if (sortChanged) {
+          this.sortProperty = result.sortProperty!;
+          this.sortDirection = result.sortDirection!;
+          this.applySort();
+        } else if (this.statusFilter !== null) {
           this.onStatusFilterChange();
         } else {
           this.applyFilters();
@@ -272,14 +284,20 @@ export class TaskListComponent implements OnInit {
     const option = this.statusOptions.find(opt => opt.value === status);
     return option ? option.label : 'Unknown';
   }
-
   clearFilters(): void {
     this.statusFilter = null;
     this.showFavoritesOnly = false;
     this.searchTerm = '';
+    
+    const sortChanged = this.sortProperty !== 'Name' || this.sortDirection !== SortDirection.Asc;
     this.sortProperty = 'Name';
     this.sortDirection = SortDirection.Asc;
-    this.loadTasks();
+    
+    if (sortChanged) {
+      this.applySort();
+    } else {
+      this.loadTasks();
+    }
   }
 
   isOverdue(deadline: Date): boolean {
