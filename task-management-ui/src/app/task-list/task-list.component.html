@@ -1,24 +1,22 @@
-<div class="task-list-container">
-  <!-- Header Section -->
+<div class="task-list-container">  <!-- Header Section -->
   <div class="header-section">
     <h1 class="main-title">
       <mat-icon class="title-icon">assignment</mat-icon>
-      <span>Tasks</span>
+      <span>Task Management</span>
     </h1>
     <div class="header-actions">
-      <button mat-icon-button (click)="openFilterDialog()" class="filter-toggle" matTooltip="Filters">
+      <button mat-icon-button (click)="openFilterDialog()" class="filter-toggle" matTooltip="Advanced Filters">
         <mat-icon>tune</mat-icon>
       </button>
-      <button mat-fab color="primary" (click)="openCreateDialog()" class="add-fab" matTooltip="Add New Task">
+      <button mat-fab color="primary" (click)="openCreateDialog()" class="add-fab" matTooltip="Create New Task">
         <mat-icon>add</mat-icon>
       </button>
     </div>
   </div>
-
   <!-- Loading State -->
   <div *ngIf="loading" class="loading-state">
-    <mat-spinner diameter="40"></mat-spinner>
-    <p>Loading tasks...</p>
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading your tasks...</p>
   </div>
 
   <!-- Empty State -->
@@ -27,6 +25,7 @@
     <h3>No tasks found</h3>
     <p>{{getEmptyStateMessage()}}</p>
     <button mat-raised-button color="primary" (click)="openCreateDialog()">
+      <mat-icon style="margin-right: 8px;">add_task</mat-icon>
       Create your first task
     </button>
   </div>
@@ -41,21 +40,20 @@
               {{getStatusLabel(task.status)}}
             </span>
           </div>
-          <div class="task-actions">
-            <button mat-icon-button (click)="toggleFavorite(task)" [class.favorite-active]="task.isFavorite">
+          <div class="task-actions">            <button mat-icon-button (click)="toggleFavorite(task)" [class.favorite-active]="task.isFavorite" matTooltip="{{task.isFavorite ? 'Remove from favorites' : 'Add to favorites'}}">
               <mat-icon>{{task.isFavorite ? 'favorite' : 'favorite_border'}}</mat-icon>
             </button>
-            <button mat-icon-button [matMenuTriggerFor]="taskMenu" class="menu-trigger">
+            <button mat-icon-button [matMenuTriggerFor]="taskMenu" class="menu-trigger" matTooltip="More options">
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #taskMenu="matMenu" xPosition="before" [overlapTrigger]="false">
               <button mat-menu-item (click)="openEditDialog(task)">
                 <mat-icon>edit</mat-icon>
-                Edit
+                <span>Edit Task</span>
               </button>
               <button mat-menu-item (click)="deleteTask(task)">
                 <mat-icon>delete</mat-icon>
-                Delete
+                <span>Delete Task</span>
               </button>
             </mat-menu>
           </div>
@@ -63,12 +61,11 @@
       </mat-card-header>
       
       <mat-card-content>
-        <p class="task-description" *ngIf="task.description">{{task.description}}</p>
-        <div class="task-meta">
+        <p class="task-description" *ngIf="task.description">{{task.description}}</p>        <div class="task-meta">
           <div class="task-dates" *ngIf="task.deadline">
             <span class="due-date">
-              <mat-icon>event</mat-icon>
-              Due: {{task.deadline | date:'short'}}
+              <mat-icon>schedule</mat-icon>
+              Due: {{task.deadline | date:'MMM dd, yyyy'}}
             </span>
           </div>
           <!-- Temporarily hide image if URL is dummy or broken -->
@@ -77,7 +74,7 @@
             <img [src]="task.imageURL" [alt]="task.name" class="task-thumbnail" (error)="onImageError($event, task)">
           </div>
           -->
-        </div>      </mat-card-content>
+        </div></mat-card-content>
     </mat-card>
   </div>
 </div>
