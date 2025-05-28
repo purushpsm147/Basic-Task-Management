@@ -11,4 +11,9 @@ public interface ITaskService
     Task<JiraProcessResults> UpdateTask(JiraTask task);
     Task<JiraProcessResults> DeleteTask(JiraTask task);
     List<JiraTask> SortTask(List<JiraTask> tasks, SortDirection order, string prop);
+    
+    // New methods for column-based task management
+    Task<IEnumerable<JiraTask>> GetTasksByColumnAsync(int columnId);
+    Task<JiraProcessResults> MoveTaskToColumnAsync(int taskId, int columnId, int? position = null);
+    Task<JiraProcessResults> ReorderTasksInColumnAsync(int columnId, IEnumerable<int> taskIds);
 }

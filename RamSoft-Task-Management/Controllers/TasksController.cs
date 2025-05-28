@@ -140,9 +140,7 @@ public class TasksController : ControllerBase
             return StatusCode(500);
         }
         return NoContent();
-    }
-
-    /// <summary>
+    }    /// <summary>
     /// Delete a Task by Id
     /// </summary>
     /// <param name="id">Id of the Jira Task to delete</param>
@@ -165,7 +163,101 @@ public class TasksController : ControllerBase
             return StatusCode(500);
         }
         return NoContent();
-    }       
+    }
+    
+    /// <summary>
+    /// Move a task to a different column with optional position
+    /// </summary>
+    /// <param name="id">Task ID</param>
+    /// <param name="columnId">Target column ID</param>
+    /// <param name="position">Optional position within the column (0-based)</param>
+    /// <returns>No Content</returns>
+    [HttpPost("{id}/move", Name = "MoveTask")]
+    [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult> MoveTask(int id, [FromQuery] int columnId, [FromQuery] int? position = null)
+    {
+        try
+        {
+            // Check if the task exists
+            var task = await _taskService.GetTask(id);
+            if (task == null)
+            {
+                return NotFound($"Task with ID {id} not found");
+            }
+            
+            var result = await _taskService.MoveTaskToColumnAsync(id, columnId, position);
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
+            
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred while moving the task: {ex.Message}");
+        }
+    }
+    
+    /// <summary>
+    /// Reorder tasks within a column
+    /// </summary>
+    /// <param name="columnId">Column ID</param>
+    /// <param name="taskIds">Ordered array of task IDs</param>
+    /// <returns>No Content</returns>
+    [HttpPost("reorder", Name = "ReorderTasks")]
+    [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult> ReorderTasks([FromQuery] int columnId, [FromBody] IEnumerable<int> taskIds)
+    {
+        try
+        {
+            if (taskIds == null || !taskIds.Any())
+            {
+                return BadRequest("Task IDs are required");
+            }
+            
+            var result = await _taskService.ReorderTasksInColumnAsync(columnId, taskIds);
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
+            
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred while reordering tasks: {ex.Message}");
+        }
+    }
+    
+    /// <summary>
+    /// Get tasks by column ID
+    /// </summary>
+    /// <param name="columnId">Column ID</param>
+    /// <returns>List of tasks in the column, ordered by position</returns>
+    [HttpGet("byColumn/{columnId}", Name = "GetTasksByColumn")]
+    [ProducesResponseType(typeof(IEnumerable<JiraTask>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<IEnumerable<JiraTask>>> GetTasksByColumn(int columnId)
+    {
+        try
+        {
+            var tasks = await _taskService.GetTasksByColumnAsync(columnId);
+            return Ok(tasks);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred while retrieving tasks: {ex.Message}");
+        }
+    }
+
 }
 
 //ToDo:

@@ -6,6 +6,8 @@ export interface JiraTask {
   isFavorite: boolean;
   status: JiraTaskStatus;
   imageURL?: string;
+  columnId?: number;
+  position: number;
 }
 
 export enum JiraTaskStatus {

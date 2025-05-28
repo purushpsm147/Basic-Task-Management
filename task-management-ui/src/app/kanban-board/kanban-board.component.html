@@ -1,0 +1,101 @@
+<div class="kanban-board-container">
+  <div class="kanban-header">
+    <h1>Task Board</h1>
+    <button mat-raised-button color="primary" (click)="openAddColumnDialog()">
+      <mat-icon>add</mat-icon> Add Column
+    </button>
+  </div>
+
+  <div class="loading-container" *ngIf="isLoading">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Loading board...</p>
+  </div>
+
+  <div class="board-empty" *ngIf="!isLoading && columns.length === 0">
+    <mat-icon>dashboard</mat-icon>
+    <h2>No columns yet</h2>
+    <p>Create your first column to get started</p>
+    <button mat-raised-button color="primary" (click)="openAddColumnDialog()">
+      <mat-icon>add</mat-icon> Add Column
+    </button>
+  </div>
+
+  <div class="kanban-container" cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="onColumnDrop($event)" [cdkDropListData]="columns">
+    <div class="kanban-column" *ngFor="let column of columns" cdkDrag>
+      <div class="column-header" [style.background-color]="column.color || '#f5f5f5'">
+        <div class="column-title">
+          <h2>{{ column.name }}</h2>
+          <div class="column-badge">{{ getColumnTasks(column.id).length }}</div>
+        </div>
+        <div class="column-actions">
+          <button mat-icon-button [matMenuTriggerFor]="columnMenu" aria-label="Column actions">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #columnMenu="matMenu">
+            <button mat-menu-item (click)="openAddTaskDialog(column.id)">
+              <mat-icon>add</mat-icon>
+              <span>Add Task</span>
+            </button>
+            <button mat-menu-item (click)="openEditColumnDialog(column)">
+              <mat-icon>edit</mat-icon>
+              <span>Edit Column</span>
+            </button>
+            <button mat-menu-item [disabled]="column.isDefault" (click)="openDeleteColumnDialog(column)">
+              <mat-icon>delete</mat-icon>
+              <span>Delete Column</span>
+            </button>
+          </mat-menu>
+        </div>
+      </div>      <div class="column-content"
+           cdkDropList
+           [id]="column.id.toString()"
+           [cdkDropListData]="getColumnTasks(column.id)"
+           (cdkDropListDropped)="onTaskDrop($event)"
+           [cdkDropListConnectedTo]="getConnectedDropLists()">
+
+        <div class="task-container" *ngFor="let task of getColumnTasks(column.id)" cdkDrag>
+          <mat-card class="task-card">
+            <mat-card-header>
+              <div mat-card-avatar class="task-favorite-icon" (click)="toggleFavorite(task)">
+                <mat-icon [style.color]="task.isFavorite ? '#FFD700' : '#E0E0E0'">
+                  {{ task.isFavorite ? 'star' : 'star_border' }}
+                </mat-icon>
+              </div>
+              <mat-card-title>{{ task.name }}</mat-card-title>
+              <mat-card-subtitle>
+                <span class="deadline-indicator" 
+                    [ngClass]="{'overdue': task.deadline < now, 
+                               'due-soon': task.deadline > now && task.deadline < soon}">
+                  {{ task.deadline | date:'MMM dd, yyyy' }}
+                </span>
+              </mat-card-subtitle>
+              <button mat-icon-button [matMenuTriggerFor]="taskMenu" class="task-menu-button">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #taskMenu="matMenu">
+                <button mat-menu-item (click)="openEditTaskDialog(task)">
+                  <mat-icon>edit</mat-icon>
+                  <span>Edit Task</span>
+                </button>
+                <button mat-menu-item (click)="openDeleteTaskDialog(task)">
+                  <mat-icon>delete</mat-icon>
+                  <span>Delete Task</span>
+                </button>
+              </mat-menu>            </mat-card-header>
+            <mat-card-content>
+              <p class="task-description">{{ task.description }}</p>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <div class="empty-column" *ngIf="getColumnTasks(column.id).length === 0">
+          <mat-icon>inbox</mat-icon>
+          <p>No tasks in this column</p>
+          <button mat-stroked-button (click)="openAddTaskDialog(column.id)">
+            <mat-icon>add</mat-icon> Add Task
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

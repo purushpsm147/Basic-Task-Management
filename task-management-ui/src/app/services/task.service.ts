@@ -105,4 +105,27 @@ export class TaskService {
       { value: 'IsFavorite', label: 'Favorite' }
     ];
   }
+
+  // Get tasks by column ID
+  getTasksByColumn(columnId: number): Observable<JiraTask[]> {
+    return this.http.get<JiraTask[]>(`${this.baseUrl}/byColumn/${columnId}`);
+  }
+
+  // Move task to a different column
+  moveTaskToColumn(taskId: number, columnId: number, position?: number): Observable<any> {
+    let url = `${this.baseUrl}/${taskId}/move?columnId=${columnId}`;
+    if (position !== undefined) {
+      url += `&position=${position}`;
+    }
+    return this.http.post(url, {}).pipe(
+      tap(() => this.refreshTasks())
+    );
+  }
+
+  // Reorder tasks within a column
+  reorderTasksInColumn(columnId: number, taskIds: number[]): Observable<any> {
+    return this.http.post(`${this.baseUrl}/reorder?columnId=${columnId}`, taskIds).pipe(
+      tap(() => this.refreshTasks())
+    );
+  }
 }

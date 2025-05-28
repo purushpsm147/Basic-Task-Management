@@ -1,4 +1,6 @@
-﻿using RamSoft_Task_Management.Enums;
+﻿using Microsoft.EntityFrameworkCore;
+using RamSoft_Task_Management.Enums;
+using RamSoft_Task_Management.Infrastructure;
 using RamSoft_Task_Management.Models;
 using System.Reflection;
 
@@ -7,9 +9,17 @@ namespace RamSoft_Task_Management.Services;
 public class TaskServices : ITaskService
 {
     private readonly ITaskRepository _taskRepository;
-    public TaskServices( ITaskRepository taskRepository)
+    private readonly JiraAppDbContext _context;
+    private readonly IColumnService _columnService;
+    
+    public TaskServices(
+        ITaskRepository taskRepository,
+        JiraAppDbContext context,
+        IColumnService columnService)
     {
         _taskRepository = taskRepository;
+        _context = context;
+        _columnService = columnService;
     }
     public async Task<JiraProcessResults> CreateTask(JiraTask task)
     {
@@ -42,6 +52,158 @@ public class TaskServices : ITaskService
     public async Task<JiraProcessResults> UpdateTask(JiraTask task)
     {
         return await _taskRepository.UpdateTask(task);
+    }    public async Task<IEnumerable<JiraTask>> GetTasksByColumnAsync(int columnId)
+    {
+        return await _context.JiraTask
+            .Where(t => t.ColumnId == columnId)
+            .OrderBy(t => t.Position)
+            .ToListAsync();
+    }
+
+    public async Task<JiraProcessResults> MoveTaskToColumnAsync(int taskId, int columnId, int? position = null)
+    {
+        try
+        {
+            // Get the task and column
+            var task = await _context.JiraTask.FindAsync(taskId);
+            if (task == null)
+            {
+                return JiraProcessResults.Failure(new JiraProcessError("TaskNotFound", $"Task with ID {taskId} not found."));
+            }
+
+            var column = await _context.Columns.FindAsync(columnId);
+            if (column == null)
+            {
+                return JiraProcessResults.Failure(new JiraProcessError("ColumnNotFound", $"Column with ID {columnId} not found."));
+            }
+
+            // If task is already in this column and no position is specified, do nothing
+            if (task.ColumnId == columnId && !position.HasValue)
+            {
+                return JiraProcessResults.Success();
+            }
+
+            // Update the task's status based on the column
+            var oldColumnId = task.ColumnId;
+            task.ColumnId = columnId;
+            
+            // Update status based on column (maintain synchronization with the legacy status field)
+            switch (columnId)
+            {
+                case 1:
+                    task.Status = JiraTaskStatus.Unassigned;
+                    break;
+                case 2:
+                    task.Status = JiraTaskStatus.Approved;
+                    break;
+                case 3:
+                    task.Status = JiraTaskStatus.InProgress;
+                    break;
+                case 4:
+                    task.Status = JiraTaskStatus.Done;
+                    break;
+                default:
+                    // For custom columns, default to InProgress
+                    task.Status = JiraTaskStatus.InProgress;
+                    break;
+            }
+
+            // If position is specified, adjust positions
+            if (position.HasValue)
+            {
+                // Get all tasks in the target column except the one being moved
+                var tasksInTargetColumn = await _context.JiraTask
+                    .Where(t => t.ColumnId == columnId && t.Id != taskId)
+                    .OrderBy(t => t.Position)
+                    .ToListAsync();
+                
+                // Calculate the new position, ensuring it's valid
+                int newPosition = Math.Max(0, Math.Min(position.Value, tasksInTargetColumn.Count));
+                task.Position = newPosition;
+                
+                // Adjust positions of other tasks
+                for (int i = 0; i < tasksInTargetColumn.Count; i++)
+                {
+                    if (i >= newPosition)
+                    {
+                        tasksInTargetColumn[i].Position = i + 1;  // Shift down
+                    }
+                    else
+                    {
+                        tasksInTargetColumn[i].Position = i;  // Keep position
+                    }
+                }
+            }
+            else
+            {
+                // Put at the end of the column
+                var maxPosition = await _context.JiraTask
+                    .Where(t => t.ColumnId == columnId)
+                    .MaxAsync(t => (int?)t.Position) ?? -1;
+                task.Position = maxPosition + 1;
+            }
+
+            await _context.SaveChangesAsync();
+            return JiraProcessResults.Success();
+        }
+        catch (Exception ex)
+        {
+            return JiraProcessResults.Failure(new JiraProcessError("InternalServerError", ex.Message));
+        }
+    }
+
+    public async Task<JiraProcessResults> ReorderTasksInColumnAsync(int columnId, IEnumerable<int> taskIds)
+    {
+        try
+        {
+            // Verify the column exists
+            if (!await _context.Columns.AnyAsync(c => c.Id == columnId))
+            {
+                return JiraProcessResults.Failure(new JiraProcessError("ColumnNotFound", $"Column with ID {columnId} not found."));
+            }
+
+            // Get tasks in the column
+            var tasksInColumn = await _context.JiraTask
+                .Where(t => t.ColumnId == columnId)
+                .ToListAsync();
+            
+            // Extract the task IDs in the column for validation
+            var tasksInColumnIds = tasksInColumn.Select(t => t.Id).ToHashSet();
+            
+            // Convert incoming task IDs to list and validate they belong to this column
+            var orderedTaskIds = taskIds.ToList();
+            
+            // Ensure all specified task IDs exist in this column
+            if (orderedTaskIds.Any(id => !tasksInColumnIds.Contains(id)))
+            {
+                return JiraProcessResults.Failure(new JiraProcessError("InvalidTaskIds", "One or more specified task IDs do not belong to this column."));
+            }
+            
+            // Update positions based on the provided order
+            for (int i = 0; i < orderedTaskIds.Count; i++)
+            {
+                var task = tasksInColumn.First(t => t.Id == orderedTaskIds[i]);
+                task.Position = i;
+            }
+            
+            // Tasks not included in the provided list should be placed at the end
+            var unspecifiedTasks = tasksInColumn
+                .Where(t => !orderedTaskIds.Contains(t.Id))
+                .ToList();
+            
+            int position = orderedTaskIds.Count;
+            foreach (var task in unspecifiedTasks)
+            {
+                task.Position = position++;
+            }
+
+            await _context.SaveChangesAsync();
+            return JiraProcessResults.Success();
+        }
+        catch (Exception ex)
+        {
+            return JiraProcessResults.Failure(new JiraProcessError("InternalServerError", ex.Message));
+        }
     }
 
     /// <summary>

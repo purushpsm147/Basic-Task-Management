@@ -1,4 +1,18 @@
+<!-- Header Navigation -->
+<mat-toolbar color="primary">
+  <span>RamSoft Task Management</span>
+  <span class="spacer"></span>
+  <nav>
+    <a mat-button routerLink="/board" routerLinkActive="active">
+      <mat-icon>dashboard</mat-icon> Board
+    </a>
+    <a mat-button routerLink="/tasks" routerLinkActive="active">
+      <mat-icon>list</mat-icon> List
+    </a>
+  </nav>
+</mat-toolbar>
+
 <!-- Main Content -->
 <div class="app-container">
-  <app-task-list></app-task-list>
+  <router-outlet></router-outlet>
 </div>

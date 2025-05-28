@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 // Material imports
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -31,6 +32,8 @@ import { TaskListComponent } from './task-list/task-list.component';
 import { TaskDialogComponent } from './task-dialog/task-dialog.component';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { FilterDialogComponent } from './filter-dialog/filter-dialog.component';
+import { KanbanBoardComponent } from './kanban-board/kanban-board.component';
+import { ColumnDialogComponent } from './column-dialog/column-dialog.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +41,9 @@ import { FilterDialogComponent } from './filter-dialog/filter-dialog.component';
     TaskListComponent,
     TaskDialogComponent,
     ConfirmDialogComponent,
-    FilterDialogComponent
+    FilterDialogComponent,
+    KanbanBoardComponent,
+    ColumnDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -66,7 +71,8 @@ import { FilterDialogComponent } from './filter-dialog/filter-dialog.component';
     MatSortModule,
     MatTooltipModule,
     MatMenuModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    DragDropModule
   ],
   providers: [],
   bootstrap: [AppComponent]

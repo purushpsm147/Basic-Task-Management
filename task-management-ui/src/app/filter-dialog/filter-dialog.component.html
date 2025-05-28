@@ -1,39 +1,43 @@
 <div class="filter-dialog">
   <h2 mat-dialog-title class="dialog-title">
     <mat-icon class="title-icon">tune</mat-icon>
-    <span>Filters</span>
+    <span>Advanced Filters</span>
   </h2>
   
   <mat-dialog-content class="dialog-content">
-    <form [formGroup]="filterForm">
-      <mat-form-field appearance="outline" class="filter-field">
-        <mat-label>Search</mat-label>
-        <input matInput formControlName="searchTerm" placeholder="By name or description">
+    <form [formGroup]="filterForm">      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Search Tasks</mat-label>
+        <input matInput formControlName="searchTerm" placeholder="Search by name or description...">
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="filter-field">
-        <mat-label>Status</mat-label>
+        <mat-label>Filter by Status</mat-label>
         <mat-select formControlName="statusFilter">
-          <mat-option [value]="null">All</mat-option>
+          <mat-option [value]="null">
+            <mat-icon>list</mat-icon>
+            <span style="margin-left: 8px;">All Statuses</span>
+          </mat-option>
           <mat-option *ngFor="let option of statusOptions" [value]="option.value">
             {{ option.label }}
           </mat-option>
         </mat-select>
+        <mat-icon matSuffix>filter_list</mat-icon>
       </mat-form-field>      <div class="toggle-section">
         <mat-slide-toggle formControlName="showFavoritesOnly" color="accent">
-          Favorites Only
+          <mat-icon style="margin-right: 8px; font-size: 18px; vertical-align: middle;">star</mat-icon>
+          Show Favorites Only
         </mat-slide-toggle>
-      </div>      <div class="sort-section">
+      </div><div class="sort-section">
         <h3 class="sort-title">
           <mat-icon class="sort-icon">sort</mat-icon>
           Sort Options
         </h3>
-        
-        <div class="active-sort-indicator" *ngIf="getSortPropertyLabel() && getSortDirectionLabel()">
-          <mat-chip-list>          <mat-chip color="primary" selected>
+          <div class="active-sort-indicator" *ngIf="getSortPropertyLabel() && getSortDirectionLabel()">
+          <mat-chip-list>
+            <mat-chip color="primary" selected>
               <mat-icon>{{getSortDirectionIcon()}}</mat-icon>
-              Sorting by: {{getSortPropertyLabel()}} ({{getSortDirectionLabel()}})
+              Currently sorting by: {{getSortPropertyLabel()}} ({{getSortDirectionLabel()}})
             </mat-chip>
           </mat-chip-list>
         </div>
@@ -57,14 +61,17 @@
       </div>
     </form>
   </mat-dialog-content>
-  
-  <mat-dialog-actions align="end" class="dialog-actions">
+    <mat-dialog-actions align="end" class="dialog-actions">
     <button mat-button color="warn" (click)="clearFilters()" *ngIf="hasActiveFilters()">
       <mat-icon>clear_all</mat-icon>
-      Clear All
+      Clear All Filters
     </button>
-    <button mat-button (click)="cancel()">Cancel</button>
+    <button mat-button (click)="cancel()">
+      <mat-icon>close</mat-icon>
+      Cancel
+    </button>
     <button mat-raised-button color="primary" (click)="apply()">
+      <mat-icon>check</mat-icon>
       Apply Filters
     </button>
   </mat-dialog-actions>

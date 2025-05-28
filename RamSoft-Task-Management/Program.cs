@@ -41,6 +41,7 @@ namespace RamSoft_Task_Management
 
             builder.Services.AddScoped<ITaskRepository, TaskRepository>();
             builder.Services.AddScoped<ITaskService, TaskServices>();
+            builder.Services.AddScoped<IColumnService, ColumnService>();
             builder.Services.AddValidatorsFromAssemblyContaining<JiraTaskValidator>();
             builder.Services.AddLogging(Services => Services.AddConsole());
 
