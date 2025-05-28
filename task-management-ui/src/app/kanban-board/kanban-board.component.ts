@@ -11,9 +11,10 @@ import { ColumnDialogComponent } from '../column-dialog/column-dialog.component'
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
-  selector: 'app-kanban-board',
-  templateUrl: './kanban-board.component.html',
-  styleUrls: ['./kanban-board.component.scss']
+    selector: 'app-kanban-board',
+    templateUrl: './kanban-board.component.html',
+    styleUrls: ['./kanban-board.component.scss'],
+    standalone: false
 })
 export class KanbanBoardComponent implements OnInit {
   columns: Column[] = [];

@@ -15,12 +15,13 @@ export interface FilterDialogData {
 }
 
 @Component({
-  selector: 'app-filter-dialog',
-  templateUrl: './filter-dialog.component.html',
-  styleUrls: ['./filter-dialog.component.scss'],
-  host: {
-    'class': 'filter-dialog-component'
-  }
+    selector: 'app-filter-dialog',
+    templateUrl: './filter-dialog.component.html',
+    styleUrls: ['./filter-dialog.component.scss'],
+    host: {
+        'class': 'filter-dialog-component'
+    },
+    standalone: false
 })
 export class FilterDialogComponent {
   filterForm: UntypedFormGroup;

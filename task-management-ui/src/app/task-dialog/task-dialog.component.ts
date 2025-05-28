@@ -11,12 +11,13 @@ export interface TaskDialogData {
 }
 
 @Component({
-  selector: 'app-task-dialog',
-  templateUrl: './task-dialog.component.html',
-  styleUrls: ['./task-dialog.component.scss'],
-  host: {
-    'class': 'task-dialog-component'
-  }
+    selector: 'app-task-dialog',
+    templateUrl: './task-dialog.component.html',
+    styleUrls: ['./task-dialog.component.scss'],
+    host: {
+        'class': 'task-dialog-component'
+    },
+    standalone: false
 })
 export class TaskDialogComponent implements OnInit {
   taskForm: UntypedFormGroup;

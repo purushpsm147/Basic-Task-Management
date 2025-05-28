@@ -9,12 +9,13 @@ export interface ConfirmDialogData {
 }
 
 @Component({
-  selector: 'app-confirm-dialog',
-  templateUrl: './confirm-dialog.component.html',
-  styleUrls: ['./confirm-dialog.component.scss'],
-  host: {
-    'class': 'confirm-dialog-component'
-  }
+    selector: 'app-confirm-dialog',
+    templateUrl: './confirm-dialog.component.html',
+    styleUrls: ['./confirm-dialog.component.scss'],
+    host: {
+        'class': 'confirm-dialog-component'
+    },
+    standalone: false
 })
 export class ConfirmDialogComponent {
   constructor(

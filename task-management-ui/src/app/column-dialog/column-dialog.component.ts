@@ -5,8 +5,8 @@ import { Column } from '../models/column.model';
 import { ColumnService } from '../services/column.service';
 
 @Component({
-  selector: 'app-column-dialog',
-  template: `
+    selector: 'app-column-dialog',
+    template: `
     <h2 mat-dialog-title>{{ isEditMode ? 'Edit Column' : 'Create New Column' }}</h2>
     <form [formGroup]="columnForm" (ngSubmit)="onSubmit()">
       <div mat-dialog-content>
@@ -53,7 +53,7 @@ import { ColumnService } from '../services/column.service';
       </div>
     </form>
   `,
-  styles: [`
+    styles: [`
     .full-width {
       width: 100%;
       margin-bottom: 15px;
@@ -73,7 +73,8 @@ import { ColumnService } from '../services/column.service';
       min-height: 30px;
       line-height: 30px;
     }
-  `]
+  `],
+    standalone: false
 })
 export class ColumnDialogComponent implements OnInit {
   columnForm: UntypedFormGroup;

@@ -8,10 +8,11 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
 import { FilterDialogComponent, FilterDialogData } from '../filter-dialog/filter-dialog.component';
 
 @Component({
-  selector: 'app-task-list',
-  templateUrl: './task-list.component.html',
-  styleUrls: ['./task-list.component.scss'],
-  animations: []
+    selector: 'app-task-list',
+    templateUrl: './task-list.component.html',
+    styleUrls: ['./task-list.component.scss'],
+    animations: [],
+    standalone: false
 })
 export class TaskListComponent implements OnInit {
   tasks: JiraTask[] = [];
