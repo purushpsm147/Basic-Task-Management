@@ -4,13 +4,16 @@ A comprehensive full-stack task management application built with ASP.NET Core W
 
 ## 🚀 Features
 
-- **Kanban Board Interface**: Drag-and-drop task management with customizable columns
-- **Task Management**: Create, read, update, and delete tasks with rich metadata
-- **Advanced Filtering**: Filter tasks by status, search terms, and favorites
-- **Column Management**: Create and manage custom workflow columns
-- **Modern UI**: Material Design components with enhanced visual appeal
-- **Responsive Design**: Works seamlessly on desktop and mobile devices
+- **Enhanced Kanban Board Interface**: Drag-and-drop task management with customizable columns and modern visual design
+- **Advanced Task Management**: Create, read, update, and delete tasks with rich metadata and file attachments
+- **Sophisticated Filtering**: Filter tasks by status, search terms, favorites with advanced dialog interface
+- **Dynamic Column Management**: Create and manage custom workflow columns with color coding
+- **Modern Glass Morphism UI**: Material Design components with enhanced visual appeal featuring glass morphism effects
+- **Responsive Design**: Works seamlessly on desktop and mobile devices with dark mode support
 - **Real-time Updates**: Instant UI updates for task and column changes
+- **Enhanced Visual Effects**: Modern gradients, shadows, and animations throughout the interface
+- **File Upload Support**: Drag-and-drop file upload functionality for task attachments
+- **Deadline Management**: Visual deadline indicators with color-coded urgency levels
 
 ## 🏗️ Architecture
 
@@ -25,19 +28,49 @@ This is a full-stack application consisting of:
 - **Testing**: Comprehensive unit tests with xUnit
 
 ### Frontend (Angular)
-- **Framework**: Angular 13
-- **UI Library**: Angular Material + CDK
-- **Styling**: SCSS with modern design patterns
+- **Framework**: Angular 19.2.14 (Latest Stable)
+- **UI Library**: Angular Material 18.2.14 + CDK
+- **Styling**: SCSS with modern design patterns, glass morphism effects
 - **State Management**: Service-based state management
 - **Drag & Drop**: Angular CDK Drag and Drop
+- **Build System**: Angular Application Builder (esbuild)
+- **TypeScript**: 5.8.3 with ES2022 target
+
+## 🎨 Recent Improvements & Updates
+
+### Angular 19 Migration (May 2025)
+- ✅ **Upgraded to Angular 19.2.14** - Latest stable version with improved performance
+- ✅ **TypeScript 5.8.3** - Enhanced type checking and ES2022 features
+- ✅ **New Build System** - Migrated to Angular Application Builder (esbuild) for faster builds
+- ✅ **Standalone Components** - Updated component architecture for better tree-shaking
+- ✅ **Breaking Changes Fixed** - Resolved all Angular Material migration issues (mat-chip-list → mat-chip-set)
+
+### Enhanced Visual Design System
+- ✅ **Glass Morphism Effects** - Modern backdrop blur and transparency effects
+- ✅ **Purple Gradient Theme** - Consistent color scheme (#667eea to #764ba2) across all components
+- ✅ **Advanced Shadows** - Multi-layered box shadows for depth and hierarchy
+- ✅ **Smooth Animations** - 0.3s cubic-bezier transitions for all interactive elements
+- ✅ **Mobile Responsive** - Enhanced mobile experience with touch-friendly interactions
+- ✅ **Dark Mode Support** - Comprehensive dark theme implementation
+
+### Component Enhancements
+- 🎯 **Kanban Board**: Enhanced task cards with hover effects and improved deadline indicators
+- 🎯 **Filter Dialog**: Glass morphism design with gradient headers and enhanced form fields
+- 🎯 **Task Dialog**: Modern file upload with drag-and-drop zone and improved form layout
+- 🎯 **Task List**: Advanced visual effects with loading states and empty state designs
+
+### Performance & Build Optimizations
+- ⚡ **Bundle Size Optimization** - Updated CSS budgets for enhanced styling (15kB limit)
+- ⚡ **Build Performance** - Faster compilation with Angular 19 Application Builder
+- ⚡ **Development Experience** - Improved hot reload and development server performance
 
 ## 📋 Prerequisites
 
 Before running this application, ensure you have the following installed:
 
 - [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
-- [Node.js](https://nodejs.org/) (v14 or higher)
-- [Angular CLI](https://angular.io/cli) (`npm install -g @angular/cli`)
+- [Node.js](https://nodejs.org/) (v18 or higher - required for Angular 19)
+- [Angular CLI](https://angular.io/cli) (`npm install -g @angular/cli@19`)
 - [SQL Server](https://www.microsoft.com/sql-server) or SQL Server Express
 - [Git](https://git-scm.com/)
 
@@ -245,12 +278,13 @@ docker run -p 8080:80 ramsoft-task-management
 - **FluentAssertions** - Assertion library for tests
 
 ### Frontend
-- **Angular 13** - Frontend framework
-- **Angular Material 13** - UI component library
-- **Angular CDK** - Component dev kit for drag & drop
-- **TypeScript** - Primary programming language
-- **SCSS** - Styling preprocessor
-- **RxJS** - Reactive programming library
+- **Angular 19.2.14** - Latest frontend framework
+- **Angular Material 18.2.14** - UI component library
+- **Angular CDK 18.2.14** - Component dev kit for drag & drop
+- **TypeScript 5.8.3** - Primary programming language with ES2022 target
+- **SCSS** - Styling preprocessor with modern glass morphism effects
+- **RxJS 7.8.0** - Reactive programming library
+- **Zone.js 0.15.1** - Change detection
 
 ### Development Tools
 - **Docker** - Containerization
@@ -313,11 +347,30 @@ Update production settings in:
 
 ## 📝 Development Guidelines
 
+### Code Standards
 - Follow C# coding conventions for backend development
 - Use Angular style guide for frontend development
-- Write unit tests for new features
+- Implement TypeScript strict mode for better type safety
+- Use meaningful commit messages following conventional commits
+
+### Frontend Development
+- **Components**: Use standalone: false for non-standalone components in Angular 19
+- **Styling**: Follow the established glass morphism design system
+- **Material Design**: Use Angular Material 18.2.14 components with proper imports
+- **Performance**: Monitor bundle sizes and optimize when necessary
+- **Responsive**: Ensure all components work on mobile and desktop
+
+### Testing Requirements
+- Write unit tests for new features using Jest/Jasmine
+- Maintain minimum 80% code coverage
+- Test all API endpoints with integration tests
+- Verify mobile responsiveness for UI changes
+
+### Build & Deployment
+- Use Angular Application Builder for production builds
+- Verify build success with `ng build` before committing
 - Update documentation for API changes
-- Use meaningful commit messages
+- Test in both development and production configurations
 
 ## 🐛 Troubleshooting
 
@@ -332,9 +385,22 @@ Update production settings in:
    - Verify CORS is properly configured in Program.cs
    - Check if frontend URL is in allowed origins
 
-3. **Node.js/Angular Issues**
-   - Clear node_modules and reinstall: `rm -rf node_modules && npm install`
-   - Clear Angular cache: `ng cache clean`
+3. **Angular 19 Specific Issues**
+   - **Node.js Version**: Ensure Node.js v18+ is installed (required for Angular 19)
+   - **Package Installation**: Clear node_modules and reinstall: `rm -rf node_modules && npm install`
+   - **Angular Cache**: Clear Angular cache: `ng cache clean`
+   - **Build Errors**: If experiencing mat-chip issues, ensure migration to mat-chip-set is complete
+   - **TypeScript Errors**: Verify TypeScript 5.8.3 compatibility with your IDE
+
+4. **Build Performance Issues**
+   - **Memory**: Increase Node.js memory limit: `node --max-old-space-size=8192`
+   - **Bundle Size**: Review angular.json budget settings if CSS warnings appear
+   - **Build Speed**: Use `ng build --configuration development` for faster development builds
+
+5. **Material Design Issues**
+   - Ensure Angular Material 18.2.14 is compatible with Angular 19
+   - Check for deprecated Material components and update accordingly
+   - Verify all Material modules are properly imported in app.module.ts
 
 ## 📄 License
 
@@ -342,10 +408,17 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## 👥 Authors
 
-- **RamSoft Development Team** - Initial work
+- **Purushottam Gupta** - Initial work
 
 ## 🙏 Acknowledgments
 
-- Angular Material team for the excellent UI components
-- Microsoft for the robust .NET ecosystem
+- Angular team for the excellent framework and regular updates to Angular 19
+- Angular Material team for the comprehensive UI component library
+- Microsoft for the robust .NET ecosystem and ASP.NET Core
+- TypeScript team for the enhanced language features in version 5.8
 - Contributors to the open-source libraries used in this project
+- Community feedback that helped shape the modern visual design improvements
+
+---
+
+*Last Updated: May 28, 2025 - Angular 19.2.14 Migration & Visual Enhancement Update*
