@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { JiraTaskStatus, SortDirection } from '../models/jira-task.model';
 
@@ -23,13 +23,13 @@ export interface FilterDialogData {
   }
 })
 export class FilterDialogComponent {
-  filterForm: FormGroup;
+  filterForm: UntypedFormGroup;
   statusOptions = this.data.statusOptions;
   sortProperties = this.data.sortProperties || [];
   sortDirections = this.data.sortDirections || [];
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     public dialogRef: MatDialogRef<FilterDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: FilterDialogData
   ) {

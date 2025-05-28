@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Column } from '../models/column.model';
 import { ColumnService } from '../services/column.service';
@@ -76,7 +76,7 @@ import { ColumnService } from '../services/column.service';
   `]
 })
 export class ColumnDialogComponent implements OnInit {
-  columnForm: FormGroup;
+  columnForm: UntypedFormGroup;
   isEditMode = false;
   
   predefinedColors = [
@@ -87,7 +87,7 @@ export class ColumnDialogComponent implements OnInit {
   ];
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private columnService: ColumnService,
     private dialogRef: MatDialogRef<ColumnDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { column?: Column }
