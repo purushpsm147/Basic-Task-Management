@@ -20,7 +20,7 @@ export interface TaskDialogData {
 })
 export class TaskDialogComponent implements OnInit {
   taskForm: UntypedFormGroup;
-  statusOptions = this.taskService.getTaskStatusOptions();
+  statusOptions: any[];
   selectedFile: File | null = null;
   isSubmitting = false;
 
@@ -31,6 +31,7 @@ export class TaskDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<TaskDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: TaskDialogData
   ) {
+    this.statusOptions = this.taskService.getTaskStatusOptions();
     this.taskForm = this.createForm();
   }
 

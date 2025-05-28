@@ -77,13 +77,12 @@ export class KanbanBoardComponent implements OnInit {
       );
     });
   }
-
   openAddColumnDialog(): void {
     const dialogRef = this.dialog.open(ColumnDialogComponent, {
       width: '400px'
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
         this.createColumn(result);
       }
@@ -102,14 +101,13 @@ export class KanbanBoardComponent implements OnInit {
       }
     );
   }
-
   openEditColumnDialog(column: Column): void {
     const dialogRef = this.dialog.open(ColumnDialogComponent, {
       width: '400px',
       data: { column }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
         this.updateColumn(column.id, result);
       }
@@ -136,9 +134,7 @@ export class KanbanBoardComponent implements OnInit {
         title: 'Confirm Delete',
         message: `Are you sure you want to delete the column "${column.name}"? All tasks will be moved to the default column.`
       }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
+    });    dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
         this.deleteColumn(column.id);
       }
@@ -157,7 +153,6 @@ export class KanbanBoardComponent implements OnInit {
       }
     );
   }
-
   openAddTaskDialog(columnId: number): void {
     const dialogRef = this.dialog.open(TaskDialogComponent, {
       width: '500px',
@@ -167,7 +162,7 @@ export class KanbanBoardComponent implements OnInit {
       }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
         this.createTask(result);
       }
@@ -186,7 +181,6 @@ export class KanbanBoardComponent implements OnInit {
       }
     );
   }
-
   openEditTaskDialog(task: JiraTask): void {
     const dialogRef = this.dialog.open(TaskDialogComponent, {
       width: '500px',
@@ -196,7 +190,7 @@ export class KanbanBoardComponent implements OnInit {
       }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
         this.updateTask(task.id, result);
       }
@@ -215,7 +209,6 @@ export class KanbanBoardComponent implements OnInit {
       }
     );
   }
-
   openDeleteTaskDialog(task: JiraTask): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '350px',
@@ -225,7 +218,7 @@ export class KanbanBoardComponent implements OnInit {
       }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
         this.deleteTask(task.id);
       }
@@ -265,9 +258,8 @@ export class KanbanBoardComponent implements OnInit {
     if (event.previousContainer === event.container) {
       // Reordering within the same column
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-      
-      const columnId = parseInt(event.container.id);
-      const taskIds = event.container.data.map(task => task.id);
+        const columnId = parseInt(event.container.id);
+      const taskIds = event.container.data.map((task: any) => task.id);
       
       this.taskService.reorderTasksInColumn(columnId, taskIds).subscribe(
         () => {},

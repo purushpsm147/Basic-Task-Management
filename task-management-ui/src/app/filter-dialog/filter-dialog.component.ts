@@ -24,15 +24,19 @@ export interface FilterDialogData {
 })
 export class FilterDialogComponent {
   filterForm: UntypedFormGroup;
-  statusOptions = this.data.statusOptions;
-  sortProperties = this.data.sortProperties || [];
-  sortDirections = this.data.sortDirections || [];
+  statusOptions: any[];
+  sortProperties: any[];
+  sortDirections: any[];
 
   constructor(
     private fb: UntypedFormBuilder,
     public dialogRef: MatDialogRef<FilterDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: FilterDialogData
   ) {
+    this.statusOptions = this.data.statusOptions;
+    this.sortProperties = this.data.sortProperties || [];
+    this.sortDirections = this.data.sortDirections || [];
+    
     this.filterForm = this.fb.group({
       searchTerm: [data.searchTerm],
       statusFilter: [data.statusFilter],

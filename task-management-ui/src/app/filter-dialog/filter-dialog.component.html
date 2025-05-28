@@ -32,14 +32,13 @@
         <h3 class="sort-title">
           <mat-icon class="sort-icon">sort</mat-icon>
           Sort Options
-        </h3>
-          <div class="active-sort-indicator" *ngIf="getSortPropertyLabel() && getSortDirectionLabel()">
-          <mat-chip-list>
+        </h3>        <div class="active-sort-indicator" *ngIf="getSortPropertyLabel() && getSortDirectionLabel()">
+          <mat-chip-set>
             <mat-chip color="primary" selected>
               <mat-icon>{{getSortDirectionIcon()}}</mat-icon>
               Currently sorting by: {{getSortPropertyLabel()}} ({{getSortDirectionLabel()}})
             </mat-chip>
-          </mat-chip-list>
+          </mat-chip-set>
         </div>
         <mat-form-field appearance="outline" class="filter-field">
           <mat-label>Sort By</mat-label>

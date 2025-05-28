@@ -27,11 +27,10 @@ export class TaskListComponent implements OnInit {
   sortDirection = SortDirection.Asc;
   showFavoritesOnly = false;
   searchTerm = '';
-  
-  // Options for dropdowns
-  statusOptions = this.taskService.getTaskStatusOptions();
-  sortProperties = this.taskService.getSortableProperties();
-  sortDirections = this.taskService.getSortDirectionOptions();
+    // Options for dropdowns
+  statusOptions: any[];
+  sortProperties: any[];
+  sortDirections: any[];
   
   displayedColumns: string[] = ['favorite', 'name', 'description', 'deadline', 'status', 'actions'];
 
@@ -39,7 +38,12 @@ export class TaskListComponent implements OnInit {
     private taskService: TaskService,
     private dialog: MatDialog,
     private snackBar: MatSnackBar
-  ) {}
+  ) {
+    // Initialize options after service injection
+    this.statusOptions = this.taskService.getTaskStatusOptions();
+    this.sortProperties = this.taskService.getSortableProperties();
+    this.sortDirections = this.taskService.getSortDirectionOptions();
+  }
 
   ngOnInit(): void {
     this.loadTasks();
@@ -129,10 +133,9 @@ export class TaskListComponent implements OnInit {
   onFavoritesToggle(): void {
     this.applyFilters();
   }
-
   openCreateDialog(): void {
     // Prevent opening multiple create dialogs
-    if (this.dialog.openDialogs.some(d => d.componentInstance instanceof TaskDialogComponent)) {
+    if (this.dialog.openDialogs.some((d: any) => d.componentInstance instanceof TaskDialogComponent)) {
       return;
     }
     const dialogRef = this.dialog.open(TaskDialogComponent, {
@@ -140,9 +143,7 @@ export class TaskListComponent implements OnInit {
       data: { mode: 'create' },
       panelClass: 'custom-dialog-container',
       disableClose: true
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
+    });    dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
         this.loadTasks();
       }
@@ -151,7 +152,7 @@ export class TaskListComponent implements OnInit {
 
   openEditDialog(task: JiraTask): void {
     // Prevent opening multiple edit dialogs
-    if (this.dialog.openDialogs.some(d => d.componentInstance instanceof TaskDialogComponent)) {
+    if (this.dialog.openDialogs.some((d: any) => d.componentInstance instanceof TaskDialogComponent)) {
       return;
     }
     const dialogRef = this.dialog.open(TaskDialogComponent, {
@@ -161,7 +162,7 @@ export class TaskListComponent implements OnInit {
       disableClose: true
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
         this.loadTasks();
       }
@@ -181,10 +182,9 @@ export class TaskListComponent implements OnInit {
       }
     });
   }
-
   deleteTask(task: JiraTask): void {
     // Prevent opening multiple dialogs
-    if (this.dialog.openDialogs.some(d => 
+    if (this.dialog.openDialogs.some((d: any) => 
         d.componentInstance instanceof ConfirmDialogComponent ||
         d.componentInstance instanceof TaskDialogComponent ||
         d.componentInstance instanceof FilterDialogComponent)) {
@@ -202,7 +202,7 @@ export class TaskListComponent implements OnInit {
       panelClass: 'custom-dialog-container'
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
         this.taskService.deleteTask(task.id).subscribe({
           next: () => {
@@ -217,10 +217,9 @@ export class TaskListComponent implements OnInit {
       }
     });
   }
-
   openFilterDialog(): void {
     // Prevent opening multiple filter dialogs
-    if (this.dialog.openDialogs.some(d => d.componentInstance instanceof FilterDialogComponent)) {
+    if (this.dialog.openDialogs.some((d: any) => d.componentInstance instanceof FilterDialogComponent)) {
       return;
     }
       const data: FilterDialogData = {
