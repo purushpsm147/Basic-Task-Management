@@ -7,6 +7,7 @@
     <RootNamespace>RamSoft_Task_Management</RootNamespace>
     <UserSecretsId>f7104955-b998-46eb-becb-77c8ce2bc070</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
