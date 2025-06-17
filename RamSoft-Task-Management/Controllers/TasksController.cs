@@ -259,21 +259,3 @@ public class TasksController : ControllerBase
     }
 
 }
-
-//ToDo:
-/*
- * Here’s a suggested priority backlog—from smallest tweaks to larger new endpoints—so you can grab the easy wins first:
-
-Add unit tests covering all SortTask scenarios (favorite vs. non-favorite, missing prop, asc/desc, invalid prop).
-
-Add a simple “upload image” endpoint (POST /api/task/{id}/image) that accepts a file, saves it to wwwroot and sets JiraTask.ImageUrl.
-Add a small DTO or wrapper so UpdateTask can just change Status—i.e. “move” between existing columns.
-Introduce a Column entity + endpoints (GET/POST/PUT/DELETE /api/columns) so users can define their own columns.
-Implement the UI-friendly “move task” endpoint (POST /api/task/{id}/move?columnId=...).
-That ordering nets the full favorite-first/prop-based sort and tests in minutes, then builds out image upload, then adds true column management.
-
-
-Get a real database, get a real ORM, and get a real UI, get a real cloud
-add authorization and authentication
-
-*/
